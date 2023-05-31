@@ -1,0 +1,257 @@
+openapi: "3.0.2"
+info:
+  title: Things API
+  version: "1.0"
+  description:
+    The Things API creates, reads, updates, lists and deletes things!
+  contact:
+    name: Laurence de Jong
+    url: https://ldej.nl/
+    email: info@ldej.nl
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+servers:
+  - url: /api/v1
+security:
+  - api_key: []
+paths:
+  /things:
+    get:
+      operationId: listThings
+      tags:
+        - thing
+      description: List things
+      parameters:
+        - name: page
+          description: Page number
+          in: query
+          schema:
+            type: integer
+        - name: keyword
+          description: Filter things by keyword
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListThingsResponse"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    post:
+      operationId: createThing
+      tags:
+        - thing
+      description: Create a thing
+      requestBody:
+        description: Object containing thing creation parameters.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateThingRequest"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThingResponse"
+        default:
+          $ref: '#/components/responses/DefaultError'
+  /things/{uuid}:
+    get:
+      operationId: getThing
+      tags:
+        - thing
+      description: Get a single thing
+      parameters:
+        - name: uuid
+          description: The uuid of the thing to get
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ThingResponse"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    put:
+      operationId: updateThing
+      tags:
+        - thing
+      description: Update a thing
+      parameters:
+        - name: uuid
+          description: The uuid of the thing to get
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        description: Object containing thing update parameters.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateThingRequest"
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/DefaultError'
+    delete:
+      operationId: deleteThing
+      tags:
+        - thing
+      description: Delete a thing
+      parameters:
+        - name: uuid
+          description: The uuid of the thing to get
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: No content
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/DefaultError'
+components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    DefaultError:
+      description: Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    ThingType:
+      type: string
+      enum:
+        - some
+        - any
+        - no
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    ThingResponse:
+      required:
+        - uuid
+        - type
+        - name
+        - rank
+        - score
+        - rating
+        - created
+      properties:
+        uuid:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/ThingType'
+        name:
+          type: string
+        rank:
+          type: integer
+          format: int64
+        score:
+          type: number
+          format: double
+        rating:
+          type: number
+          format: float
+        created:
+          type: string
+          format: date-time
+    CreateThingRequest:
+      required:
+        - name
+        - type
+        - rank
+      properties:
+        name:
+          type: string
+          maxLength: 10
+        type:
+          $ref: '#/components/schemas/ThingType'
+        rank:
+          type: integer
+          format: int64
+        score:
+          type: number
+          format: double
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+    UpdateThingRequest:
+      required:
+        - score
+      properties:
+        score:
+          type: number
+          format: double
+    ListThingsResponse:
+      required:
+        - things
+        - total
+      properties:
+        things:
+          items:
+            $ref: "#/components/schemas/ThingResponse"
+          type: array
+        total:
+          type: integer
+tags:
+  - name: thing
+    description: Endpoints interacting with things
