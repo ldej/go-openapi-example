@@ -76,10 +76,12 @@ func (d *ThingsDatastore) UpdateThing(t Thing) error {
 	d.lock.Lock()
 	defer d.lock.Unlock()
 
-	if _, found := d.index[t.UUID]; !found {
+	storedThing, found := d.index[t.UUID]
+	if !found {
 		return ErrNotFound
 	}
-	d.index[t.UUID] = t
+	storedThing.Score = t.Score
+	d.index[t.UUID] = storedThing
 	return nil
 }
 
