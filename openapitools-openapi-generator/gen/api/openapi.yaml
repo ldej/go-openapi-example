@@ -1,0 +1,349 @@
+openapi: 3.0.2
+info:
+  contact:
+    email: info@ldej.nl
+    name: Laurence de Jong
+    url: https://ldej.nl/
+  description: "The Things API creates, reads, updates, lists and deletes things!"
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  title: Things API
+  version: "1.0"
+servers:
+- url: /api/v1
+security:
+- api_key: []
+tags:
+- description: Endpoints interacting with things
+  name: thing
+paths:
+  /things:
+    get:
+      description: List things
+      operationId: listThings
+      parameters:
+      - description: Page number
+        explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+        style: form
+      - description: Filter things by keyword
+        explode: true
+        in: query
+        name: keyword
+        required: false
+        schema:
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListThingsResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      tags:
+      - thing
+    post:
+      description: Create a thing
+      operationId: createThing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateThingRequest'
+        description: Object containing thing creation parameters.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+          description: OK
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      tags:
+      - thing
+  /things/{uuid}:
+    delete:
+      description: Delete a thing
+      operationId: deleteThing
+      parameters:
+      - description: The uuid of the thing to get
+        explode: false
+        in: path
+        name: uuid
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      tags:
+      - thing
+    get:
+      description: Get a single thing
+      operationId: getThing
+      parameters:
+      - description: The uuid of the thing to get
+        explode: false
+        in: path
+        name: uuid
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      tags:
+      - thing
+    put:
+      description: Update a thing
+      operationId: updateThing
+      parameters:
+      - description: The uuid of the thing to get
+        explode: false
+        in: path
+        name: uuid
+        required: true
+        schema:
+          format: uuid
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateThingRequest'
+        description: Object containing thing update parameters.
+      responses:
+        "204":
+          description: No content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: The specified resource was not found
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+          description: Error
+      tags:
+      - thing
+components:
+  responses:
+    NotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: The specified resource was not found
+    Unauthorized:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Unauthorized
+    DefaultError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+      description: Error
+  schemas:
+    ThingType:
+      enum:
+      - some
+      - any
+      - "false"
+      type: string
+    Error:
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+      type: object
+    ThingResponse:
+      example:
+        score: 6.027456183070403
+        created: 2000-01-23T04:56:07.000+00:00
+        name: name
+        rating: 1.4658129
+        rank: 0
+        type: null
+        uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        uuid:
+          format: uuid
+          type: string
+        type:
+          $ref: '#/components/schemas/ThingType'
+        name:
+          type: string
+        rank:
+          format: int64
+          type: integer
+        score:
+          format: double
+          type: number
+        rating:
+          format: float
+          type: number
+        created:
+          format: date-time
+          type: string
+      required:
+      - created
+      - name
+      - rank
+      - rating
+      - score
+      - type
+      - uuid
+    CreateThingRequest:
+      example:
+        score: 6.027456183070403
+        name: name
+        rating: 0.73290646
+        rank: 0
+        type: null
+      properties:
+        name:
+          maxLength: 10
+          type: string
+        type:
+          $ref: '#/components/schemas/ThingType'
+        rank:
+          format: int64
+          type: integer
+        score:
+          format: double
+          type: number
+        rating:
+          format: float
+          maximum: 5
+          minimum: 0
+          type: number
+      required:
+      - name
+      - rank
+      - type
+    UpdateThingRequest:
+      example:
+        score: 0.8008281904610115
+      properties:
+        score:
+          format: double
+          type: number
+      required:
+      - score
+    ListThingsResponse:
+      example:
+        total: 5
+        things:
+        - score: 6.027456183070403
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          rating: 1.4658129
+          rank: 0
+          type: null
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - score: 6.027456183070403
+          created: 2000-01-23T04:56:07.000+00:00
+          name: name
+          rating: 1.4658129
+          rank: 0
+          type: null
+          uuid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        things:
+          items:
+            $ref: '#/components/schemas/ThingResponse'
+          type: array
+        total:
+          type: integer
+      required:
+      - things
+      - total
+  securitySchemes:
+    api_key:
+      in: header
+      name: api_key
+      type: apiKey
