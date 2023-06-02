@@ -17,3 +17,13 @@ Generate
 ```shell
 java -jar /path/to/openapi-generator-cli.jar generate -i ../openapi3.yaml -g go-server -o gen --enable-post-process-file --git-user-id=ldej --git-repo-id=go-openapi-example/openapitools-openapi-generator/gen --additional-properties=router=chi,outputAsLibrary=true,onlyInterfaces=true
 ```
+
+Run server
+```shell
+go run server.go
+```
+
+Visit Swagger
+```shell
+open http://localhost:8000/swagger/
+```
