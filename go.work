@@ -4,4 +4,5 @@ use (
 	.
 	oapi-codegen
 	openapitools-openapi-generator
+	contiamo-openapi-generator-go
 )
