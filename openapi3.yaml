@@ -13,8 +13,6 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0
 servers:
   - url: /api/v1
-security:
-  - api_key: []
 paths:
   /things:
     get:
@@ -45,6 +43,8 @@ paths:
         default:
           $ref: '#/components/responses/DefaultError'
     post:
+      security:
+        - apiKey: [ ]
       operationId: createThing
       tags:
         - thing
@@ -92,6 +92,8 @@ paths:
         default:
           $ref: '#/components/responses/DefaultError'
     put:
+      security:
+        - apiKey: [ ]
       operationId: updateThing
       tags:
         - thing
@@ -120,6 +122,8 @@ paths:
         default:
           $ref: '#/components/responses/DefaultError'
     delete:
+      security:
+        - apiKey: [ ]
       operationId: deleteThing
       tags:
         - thing
@@ -143,9 +147,9 @@ paths:
           $ref: '#/components/responses/DefaultError'
 components:
   securitySchemes:
-    api_key:
+    apiKey:
       type: apiKey
-      name: api_key
+      name: X-Api-Key
       in: header
   responses:
     NotFound:
@@ -172,7 +176,7 @@ components:
       enum:
         - some
         - any
-        - no
+        - none
     Error:
       type: object
       properties:
@@ -184,6 +188,7 @@ components:
         - code
         - message
     ThingResponse:
+      type: object
       required:
         - uuid
         - type
@@ -213,6 +218,7 @@ components:
           type: string
           format: date-time
     CreateThingRequest:
+      type: object
       required:
         - name
         - type
@@ -235,6 +241,7 @@ components:
           minimum: 0
           maximum: 5
     UpdateThingRequest:
+      type: object
       required:
         - score
       properties:
@@ -242,6 +249,7 @@ components:
           type: number
           format: double
     ListThingsResponse:
+      type: object
       required:
         - things
         - total
