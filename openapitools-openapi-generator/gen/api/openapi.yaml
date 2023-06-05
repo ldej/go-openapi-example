@@ -12,8 +12,6 @@ info:
   version: "1.0"
 servers:
 - url: /api/v1
-security:
-- api_key: []
 tags:
 - description: Endpoints interacting with things
   name: thing
@@ -82,6 +80,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Error
+      security:
+      - apiKey:
+        - thing.create
       tags:
       - thing
   /things/{uuid}:
@@ -119,6 +120,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Error
+      security:
+      - apiKey:
+        - thing.delete
       tags:
       - thing
     get:
@@ -201,6 +205,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
           description: Error
+      security:
+      - apiKey:
+        - thing.update
       tags:
       - thing
 components:
@@ -228,7 +235,7 @@ components:
       enum:
       - some
       - any
-      - "false"
+      - none
       type: string
     Error:
       properties:
@@ -277,6 +284,7 @@ components:
       - score
       - type
       - uuid
+      type: object
     CreateThingRequest:
       example:
         score: 6.027456183070403
@@ -305,6 +313,7 @@ components:
       - name
       - rank
       - type
+      type: object
     UpdateThingRequest:
       example:
         score: 0.8008281904610115
@@ -314,6 +323,7 @@ components:
           type: number
       required:
       - score
+      type: object
     ListThingsResponse:
       example:
         total: 5
@@ -342,8 +352,9 @@ components:
       required:
       - things
       - total
+      type: object
   securitySchemes:
-    api_key:
+    apiKey:
       in: header
-      name: api_key
+      name: X-Api-Key
       type: apiKey

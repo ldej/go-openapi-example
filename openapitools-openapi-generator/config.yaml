@@ -1,0 +1,3 @@
+router: chi
+outputAsLibrary: true
+onlyInterfaces: true

@@ -2,7 +2,6 @@ README.md
 api/openapi.yaml
 go/api.go
 go/api_thing.go
-go/api_thing_service.go
 go/error.go
 go/helpers.go
 go/impl.go

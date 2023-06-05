@@ -23,7 +23,7 @@ type ThingType string
 const (
 	SOME ThingType = "some"
 	ANY ThingType = "any"
-	FALSE ThingType = "false"
+	NONE ThingType = "none"
 )
 
 // UnmarshalJSON sets *m to a copy of data while respecting defaults if specified.

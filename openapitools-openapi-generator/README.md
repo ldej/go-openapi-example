@@ -15,7 +15,7 @@ Note: the go-server generators have been updated recently, and are therefore not
 
 Generate
 ```shell
-java -jar /path/to/openapi-generator-cli.jar generate -i ../openapi3.yaml -g go-server -o gen --enable-post-process-file --git-user-id=ldej --git-repo-id=go-openapi-example/openapitools-openapi-generator/gen --additional-properties=router=chi,outputAsLibrary=true,onlyInterfaces=true
+java -jar /path/to/openapi-generator-cli.jar generate -i ../openapi3.yaml -g go-server -o gen --enable-post-process-file --git-user-id=ldej --git-repo-id=go-openapi-example/openapitools-openapi-generator/gen -c config.yaml
 ```
 
 Run server
