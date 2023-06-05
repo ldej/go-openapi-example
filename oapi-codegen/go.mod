@@ -5,9 +5,9 @@ go 1.20
 replace github.com/ldej/go-openapi-example => ../
 
 require (
-	github.com/deepmap/oapi-codegen v1.12.4
+	github.com/deepmap/oapi-codegen v1.13.0
 	github.com/getkin/kin-openapi v0.117.0
-	github.com/go-chi/chi/v5 v5.0.7
+	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-openapi/runtime v0.26.0
 	github.com/google/uuid v1.3.0
 	github.com/ldej/go-openapi-example v0.0.0-00010101000000-000000000000

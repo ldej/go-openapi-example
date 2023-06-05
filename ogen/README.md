@@ -19,7 +19,9 @@ Run server
 go run server.go
 ```
 
-Visit Swagger
+Visit Swagger UI
 ```shell
 open http://localhost:8000/swagger/
 ```
+
+Use `test` for the `X-Api-Key` header or for `Authorize` button in Swagger UI

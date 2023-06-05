@@ -50,12 +50,17 @@ func main() {
 		},
 	)
 
+	securityMiddleware := NewSecurityMiddleware()
+
 	apiServer := api.HandlerWithOptions(
 		api.NewStrictHandler(s, nil),
 		api.ChiServerOptions{
-			BaseURL:     "/api/v1",
-			BaseRouter:  router,
-			Middlewares: []api.MiddlewareFunc{validator},
+			BaseURL:    "/api/v1",
+			BaseRouter: router,
+			Middlewares: []api.MiddlewareFunc{
+				securityMiddleware,
+				validator,
+			},
 		},
 	)
 
@@ -169,5 +174,38 @@ func mapThingToThingResponse(thing helpers.Thing) api.ThingResponse {
 		Score:   thing.Score,
 		Type:    api.ThingType(thing.Type),
 		Uuid:    uuid.MustParse(thing.UUID),
+	}
+}
+
+func NewSecurityMiddleware() func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+
+			scopes, ok := ctx.Value(api.ApiKeyScopes).([]string)
+			if !ok {
+				// no scopes required for this endpoint, no X-Api-Key required
+				next.ServeHTTP(w, r)
+				return
+			}
+
+			apiKey := r.Header.Get("X-Api-Key")
+			if apiKey == "" {
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte("header X-Api-Key not provided"))
+				return
+			}
+
+			if apiKey != "test" {
+				w.WriteHeader(http.StatusUnauthorized)
+				w.Write([]byte("invalid api key provided"))
+				return
+			}
+
+			// This is where you check if api key has the required scope
+			_, _ = apiKey, scopes
+
+			next.ServeHTTP(w, r)
+		})
 	}
 }

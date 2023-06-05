@@ -44,7 +44,7 @@ paths:
           $ref: '#/components/responses/DefaultError'
     post:
       security:
-        - apiKey: [ ]
+        - apiKey: [thing.create]
       operationId: createThing
       tags:
         - thing
@@ -93,7 +93,7 @@ paths:
           $ref: '#/components/responses/DefaultError'
     put:
       security:
-        - apiKey: [ ]
+        - apiKey: [thing.update]
       operationId: updateThing
       tags:
         - thing
@@ -123,7 +123,7 @@ paths:
           $ref: '#/components/responses/DefaultError'
     delete:
       security:
-        - apiKey: [ ]
+        - apiKey: [thing.delete]
       operationId: deleteThing
       tags:
         - thing
