@@ -6,7 +6,7 @@ https://github.com/contiamo/openapi-generator-go
 
 Install openapi-generator-go
 ```shell
-go install github.com/contiamo/openapi-generator-go@latest
+go install github.com/contiamo/openapi-generator-go/v2@latest
 ```
 
 Generate
